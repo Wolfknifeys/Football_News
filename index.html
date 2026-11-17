@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>أخبار الكرة</title>
+<meta name="theme-color" content="#0d3a27">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@800&family=Tajawal:wght@400;500;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f1f4ef;--fg:#13251b;--mut:#5c6b62;--ln:#d5ddd5;--dz:#0b7a4b;--eu:#2f5d9e;--af:#a8680f;--tr:#8a3fa0;--hero:#0d3a27;--red:#c8202f}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1a14;--fg:#e8efe9;--mut:#9aaa9f;--ln:#27382d;--dz:#3fc183;--eu:#7da7e8;--af:#e0a64f;--tr:#c996dd;--hero:#14513a}}
+body{margin:0;background:var(--bg);color:var(--fg);font:400 16px/1.7 Tajawal,"Segoe UI",Tahoma,sans-serif}
+.w{max-width:640px;margin:0 auto;padding:0 16px 32px}
+header{padding:20px 0 12px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+h1{font:800 28px/1.2 "Noto Kufi Arabic",Tajawal,Tahoma,sans-serif;margin:0}
+header p{margin:4px 0 0;color:var(--mut);font-size:14px}
+#ins{font:700 14px Tajawal,Tahoma,sans-serif;background:var(--hero);color:#fff;border:0;border-radius:8px;padding:8px 12px;cursor:pointer}
+nav{position:sticky;top:0;z-index:5;background:var(--bg);display:flex;gap:8px;overflow-x:auto;padding:8px 0 10px;border-bottom:1px solid var(--ln)}
+nav button{flex:none;font:500 15px Tajawal,Tahoma,sans-serif;color:var(--fg);background:none;border:1px solid var(--ln);border-radius:999px;padding:6px 14px;cursor:pointer}
+nav button[aria-pressed=true]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+:focus-visible{outline:2px solid var(--dz);outline-offset:2px}
+.n,.lead{padding:14px;border-bottom:1px solid var(--ln);border-inline-start:4px solid var(--k)}
+.lead{background:var(--hero);color:#fff;border:0;border-radius:14px;margin:16px 0 8px;padding:18px}
+.m{display:flex;justify-content:space-between;font-size:13px;color:var(--mut)}
+.n .m b{color:var(--k)}
+.lead .m,.lead .a{color:#d6e6dc}
+.k{background:var(--red);color:#fff;border-radius:4px;padding:0 8px;font-weight:800}
+h2{font:800 18px/1.6 Tajawal,Tahoma,sans-serif;margin:6px 0}
+.lead h2{font-size:22px}
+h2 a{color:inherit;text-decoration:none}
+.a{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--mut)}
+.a button{font:inherit;background:none;border:0;color:inherit;cursor:pointer;padding:4px 0}
+.a button[aria-pressed=true]{color:var(--af);font-weight:800}
+.lead .a button[aria-pressed=true]{color:#ffd37a}
+.e,footer{color:var(--mut);font-size:14px;padding:20px 0 0}
+</style>
+</head>
+<body>
+<div class="w">
+<header><div><h1>أخبار الكرة</h1><p id="up">جارٍ التحميل…</p></div><button id="ins" hidden>تثبيت التطبيق</button></header>
+<nav id="nav"><button data-f="all">الكل</button><button data-f="dz">الجزائر</button><button data-f="eu">أوروبا</button><button data-f="af">أفريقيا والعرب</button><button data-f="tr">الانتقالات</button><button data-f="sv">المحفوظة<span id="cn"></span></button></nav>
+<main id="list"></main>
+<footer>العناوين من أخبار Google وتُفتح المقالات في مواقعها الأصلية. على آيفون: مشاركة ثم «إضافة إلى الشاشة الرئيسية».</footer>
+</div>
+<script>
+var CAT={dz:'الجزائر',eu:'أوروبا',af:'أفريقيا والعرب',tr:'الانتقالات'},K={dz:'var(--dz)',eu:'var(--eu)',af:'var(--af)',tr:'var(--tr)'};
+var D=[],L=[],S=[],f='all',ip;
+try{S=JSON.parse(localStorage.getItem('sv')||'[]')}catch(e){}
+function ago(s){var m=Math.round((Date.now()-new Date(s))/6e4);if(m<2)return 'الآن';if(m<60)return 'منذ '+m+' د';var h=Math.round(m/60);if(h<24)return 'منذ '+h+' س';h=Math.round(h/24);return h<2?'أمس':'منذ '+h+' أيام'}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function saved(n){return S.some(function(x){return x.u===n.u})}
+function row(n,j,lead){var on=saved(n);return '<article class="'+(lead?'lead':'n')+'" style="--k:'+K[n.c]+'"><div class="m"><b>'+(lead?'<span class="k">آخر خبر</span> ':'')+CAT[n.c]+'</b><time>'+ago(n.d)+'</time></div><h2><a href="'+esc(n.u)+'" target="_blank" rel="noopener">'+esc(n.t)+'</a></h2><div class="a"><span>'+esc(n.r||'')+'</span><button data-j="'+j+'" aria-pressed="'+on+'">'+(on?'★ محفوظ':'☆ حفظ')+'</button></div></article>'}
+function draw(){
+var b=document.querySelectorAll('#nav button');
+for(var i=0;i<b.length;i++)b[i].setAttribute('aria-pressed',b[i].dataset.f===f);
+document.getElementById('cn').textContent=S.length?' ('+S.length+')':'';
+L=f==='sv'?S:D.filter(function(n){return f==='all'||n.c===f});
+document.getElementById('list').innerHTML=L.length?L.map(function(n,j){return row(n,j,j===0&&f!=='sv')}).join(''):'<p class="e">'+(f==='sv'?'لا توجد أخبار محفوظة بعد. اضغط «☆ حفظ» تحت أي خبر.':'لا توجد أخبار في هذا القسم الآن.')+'</p>'}
+document.addEventListener('click',function(e){
+var b=e.target.closest('button');if(!b)return;
+if(b.dataset.f){f=b.dataset.f;draw()}
+else if(b.dataset.j){var n=L[+b.dataset.j];if(saved(n))S=S.filter(function(x){return x.u!==n.u});else S.push(n);try{localStorage.setItem('sv',JSON.stringify(S))}catch(x){}draw()}});
+fetch('news.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){D=j.items||[];document.getElementById('up').textContent='آخر تحديث: '+ago(j.updated);draw()}).catch(function(){document.getElementById('up').textContent='';document.getElementById('list').innerHTML='<p class="e">تعذّر تحميل الأخبار. تحقق من الاتصال ثم أعد فتح التطبيق.</p>'});
+addEventListener('beforeinstallprompt',function(e){e.preventDefault();ip=e;var b=document.getElementById('ins');b.hidden=false;b.onclick=function(){ip.prompt();b.hidden=true}});
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js');
+</script>
+</body>
+</html>
